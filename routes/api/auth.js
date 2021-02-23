@@ -4,8 +4,8 @@ const { baseAuth } = require('../../middleware/baseAuth')
 const authController = require('../../controllers/authController');
 const ErrorResponse = require('../../model/ErrorResponse');
 
-router.get("/", (req, res, next)=> {
-    return next(new ErrorResponse(400, "I'm error ! I'm not good"))
+router.get("/error", (req, res, next)=> {
+    return next(new ErrorResponse(400, "I'm error ! I'm not good"));
 });
 
 router.post("/register", baseAuth, authController.register);

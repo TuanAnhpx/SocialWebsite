@@ -4,15 +4,15 @@ const {Schema} = mongoose;
 
 mongoose.set('runValidators', true);
 
-const PostSchema = new Schema({
-    post_desc:{
+const CommentSchema = new Schema({
+    comment_desc:{
         type: String,
-        required: [true, "Post_desc is required!"]
+        required: [true, "Comment_desc is required!"]
     },
-    post_pic:{
+    comment_pic:{
         type : String
     },
-    author_post: {
+    author_comment: {
         type: String
     }
 },{
