@@ -8,6 +8,6 @@ router.route('/')
 .post(commentController.createNewComment)
 
 router.patch('/:postId', jwtAuth, commentController.updateCommentById)
-router.delete('/:postId', jwtAuth, poscommentControllertController.deleteCommentById)
+router.delete('/:postId', jwtAuth, commentController.deleteCommentById)
 
 module.exports = router;

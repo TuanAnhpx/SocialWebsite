@@ -1,4 +1,4 @@
-const mongoose = required('mongoose');
+const mongoose = require('mongoose');
 
 const {Schema} = mongoose;
 
@@ -19,4 +19,4 @@ const CommentSchema = new Schema({
     timestamp: true,
 });
 
-module.exports = mongoose.model("PostSchema", PostSchema)
+module.exports = mongoose.model("CommentSchema", CommentSchema)
