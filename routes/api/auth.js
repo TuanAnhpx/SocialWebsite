@@ -8,7 +8,7 @@ router.get("/error", (req, res, next)=> {
     return next(new ErrorResponse(400, "I'm error ! I'm not good"));
 });
 
-router.post("/register", baseAuth, authController.register);
+router.post("/register", authController.register);
 router.post("/login", baseAuth, authController.login);
 
 module.exports = router;
