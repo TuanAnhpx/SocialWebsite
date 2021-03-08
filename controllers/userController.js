@@ -13,13 +13,43 @@ exports.resetPassword = asyncMiddleware(async (req, res, next) =>{
         return next(new ErrorResponse(400, "Email is not found!"));
     }
     const token = crypto.randomBytes(30).toString("hex");
-    const info = MailService.sendMail(
+    const hashedToken =  crypto.createHash("sha256").update(token).digest("hex");
+    
+    const newToken = await Token.findOneAndUpdate(
+        {email},
+        {email, token : hashedToken, expired: Date.now() + 1000*60* process.env.RESETTOKEN_EXPIRED},
+        {upsert: true, new: true}
+        );
+
+    await MailService.sendMail(
         process.env.EMAIL,
         email, 
         "Reset Password",
-        "reset password"
+        "reset password",
         `<a href='http://localhost:3000/api/v1/user/resetPassword/${token}'>http://localhost:3000/api/v1/user/resetPassword/${token}</a>`
     )
     res.status(200).json(new SuccessResponse(200, `Please check your email : ${email}`))
-    console.log(info)
+    console.log("hashed Token", hashedToken);
+});
+
+exports.updatePassword = asyncMiddleware(async (req, res, next) =>{
+   const {token} = req.params;
+   const {password} = req.body;
+   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+   const dbToken = await Token.findOne({
+       token: hashedToken, 
+       expired: {$gt: Date.now()}
+    });
+   if(!dbToken){
+       return next( new ErrorResponse(400, "Invalid token!"));
+   }
+   const user = await User.findById(dbToken.userId);
+   if(!user){
+       return next(new ErrorResponse(404, "User is not found!"))
+   }
+
+   user.password = password;
+   await user.save();
+
+   res.status(200).json(new SuccessResponse(200, "OK!!!"));
 });
